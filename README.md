@@ -1,3 +1,3 @@
-# Firstpass
+# FirstPass
 
-Firstpass is a simple password manager
+FirstPass is a simple password manager
