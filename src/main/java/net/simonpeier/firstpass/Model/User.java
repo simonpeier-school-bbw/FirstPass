@@ -1,12 +1,19 @@
-package net.simonpeier.firstpass.Model;
+package net.simonpeier.firstpass.model;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
-    private List<Application> applications;
 
     public int getId() {
         return id;
@@ -30,13 +37,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public List<Application> getApplications() {
-        return applications;
-    }
-
-    public void setApplications(List<Application> applications) {
-        this.applications = applications;
     }
 }

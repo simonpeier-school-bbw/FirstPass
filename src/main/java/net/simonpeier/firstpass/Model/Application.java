@@ -1,4 +1,4 @@
-package net.simonpeier.firstpass.Model;
+package net.simonpeier.firstpass.model;
 
 public class Application {
     private String name;

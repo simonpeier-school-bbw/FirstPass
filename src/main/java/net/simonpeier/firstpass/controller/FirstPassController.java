@@ -1,4 +1,4 @@
-package net.simonpeier.firstpass;
+package net.simonpeier.firstpass.controller;
 
 import org.springframework.stereotype.Controller;
 
