@@ -30,4 +30,14 @@ public class User {
     public void setApplications(List<Application> applications) {
         this.applications = applications;
     }
+
+    public User(String username, String password, List<Application> applications) {
+        this.username = username;
+        this.password = password;
+        this.applications = applications;
+    }
+
+    public User() {
+
+    }
 }
