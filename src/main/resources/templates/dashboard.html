@@ -11,6 +11,11 @@
 <body id="body" class="background1">
 <div class="container">
     <h1 class="my-4">Dashboard</h1>
+    <form th:action="@{/login}" method="GET">
+        <div class="col text-center">
+            <button type="submit" value="Login" name="Submit" class="btn">Log out</button>
+        </div>
+    </form>
 </div>
 </body>
 </html>
