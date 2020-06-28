@@ -16,11 +16,12 @@ import java.security.spec.InvalidKeySpecException;
 public class AuthenticationController {
     final UserService userService;
     final ApplicationService applicationService;
-    private Cypher cypher;
+    private final Cypher cypher;
 
     public AuthenticationController(UserService userService, ApplicationService applicationService) {
         this.userService = userService;
         this.applicationService = applicationService;
+        cypher = new Cypher();
     }
 
     @GetMapping("/login")
