@@ -17,6 +17,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private byte[] salt;
+
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Application> applications;
@@ -29,6 +32,14 @@ public class User {
 
     public User() {
 
+    }
+
+    public byte[] getSalt() {
+        return salt;
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
     }
 
     public long getId() {
