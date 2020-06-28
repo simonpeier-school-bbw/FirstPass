@@ -18,15 +18,16 @@ public class User {
     private String password;
 
     @Column(nullable = false)
-    private byte[] salt;
+    private String salt;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Application> applications;
 
-    public User(String username, String password, List<Application> applications) {
+    public User(String username, String password, String salt, List<Application> applications) {
         this.username = username;
         this.password = password;
+        this.salt = salt;
         this.applications = applications;
     }
 
@@ -34,11 +35,11 @@ public class User {
 
     }
 
-    public byte[] getSalt() {
+    public String getSalt() {
         return salt;
     }
 
-    public void setSalt(byte[] salt) {
+    public void setSalt(String salt) {
         this.salt = salt;
     }
 

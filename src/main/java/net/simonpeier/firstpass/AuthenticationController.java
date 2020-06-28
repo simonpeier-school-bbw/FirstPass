@@ -33,7 +33,7 @@ public class AuthenticationController {
     public String handleLogin(Model model, @ModelAttribute User loginUser) throws InvalidKeySpecException, NoSuchAlgorithmException {
         User referenceUser = userService.findUserByName(loginUser.getUsername());
         if (referenceUser != null) {
-            loginUser.setPassword(cypher.hashPassword(loginUser, referenceUser.getSalt()));
+            loginUser.setPassword(cypher.hashPassword(loginUser.getPassword(), referenceUser.getSalt()));
             if (userService.findUserByName(loginUser.getUsername()).getPassword().equals(loginUser.getPassword())) {
                 // login successful
                 User user = userService.findUserByName(loginUser.getUsername());
