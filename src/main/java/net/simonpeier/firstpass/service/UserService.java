@@ -3,12 +3,28 @@ package net.simonpeier.firstpass.service;
 import net.simonpeier.firstpass.model.User;
 import net.simonpeier.firstpass.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@SessionScope
 public class UserService {
+    private User authorisedUser;
+
+    public User getAuthorisedUser() {
+        return authorisedUser;
+    }
+
+    public void setAuthorisedUser(User authorisedUser) {
+        this.authorisedUser = authorisedUser;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {

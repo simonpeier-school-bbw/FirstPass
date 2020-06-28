@@ -31,13 +31,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String handleLogin(Model model, @ModelAttribute User loginUser) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        User referenceUser = userService.findUserByName(loginUser.getUsername());
+    public String handleLogin(Model model, @ModelAttribute User user) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        User referenceUser = userService.findUserByName(user.getUsername());
         if (referenceUser != null) {
-            loginUser.setPassword(cypher.hashPassword(loginUser.getPassword(), referenceUser.getSalt()));
-            if (userService.findUserByName(loginUser.getUsername()).getPassword().equals(loginUser.getPassword())) {
+            user.setPassword(cypher.hashPassword(user.getPassword(), referenceUser.getSalt()));
+            if (userService.findUserByName(user.getUsername()).getPassword().equals(user.getPassword())) {
                 // login successful
-                User user = userService.findUserByName(loginUser.getUsername());
+                userService.setAuthorisedUser(user);
                 model.addAttribute("user", user);
                 model.addAttribute("applications", applicationService.findAllByUser(user));
                 return "dashboard";
@@ -45,5 +45,11 @@ public class AuthenticationController {
         }
         model.addAttribute("error", "Wrong username or password");
         return "login";
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        userService.setAuthorisedUser(null);
+        return "redirect:/";
     }
 }

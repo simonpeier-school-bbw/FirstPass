@@ -11,29 +11,29 @@
 <body id="body" class="background1">
 <div class="container">
     <h1 class="my-4">Dashboard</h1>
-    <form th:action="@{/login}" method="GET">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${applications.empty}">
+            <td colspan="5">No Applications Available</td>
+        </tr>
+        <tr th:each="app : ${applications}">
+            <td th:text="${app.name}"></td>
+            <td th:text="${app.username}"></td>
+            <td th:text="${app.password}"></td>
+            <td th:text="${app.description}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:action="@{/logout}" method="GET">
         <div class="col text-center">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Username</th>
-                    <th>Password</th>
-                    <th>Description</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:if="${applications.empty}">
-                    <td colspan="5">No Applications Available</td>
-                </tr>
-                <tr th:each="app : ${applications}">
-                    <td th:text="${app.name}"></td>
-                    <td th:text="${app.username}"></td>
-                    <td th:text="${app.password}"></td>
-                    <td th:text="${app.description}"></td>
-                </tr>
-                </tbody>
-            </table>
             <button type="submit" value="Login" name="Submit" class="btn">Log out</button>
         </div>
     </form>
