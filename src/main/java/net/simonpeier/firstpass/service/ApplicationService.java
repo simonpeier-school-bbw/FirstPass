@@ -1,9 +1,11 @@
 package net.simonpeier.firstpass.service;
 
 import net.simonpeier.firstpass.model.Application;
+import net.simonpeier.firstpass.model.User;
 import net.simonpeier.firstpass.repository.ApplicationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,16 @@ public class ApplicationService {
 
     public List<Application> findAll() {
         return applicationRepository.findAll();
+    }
+
+    public List<Application> findAllByUser(User user) {
+        List<Application> applications = new ArrayList<>();
+        for (Application application : findAll()) {
+            if (application.getUser() == user) {
+                applications.add(application);
+            }
+        }
+        return applications;
     }
 
     public Optional<Application> findApplicationById(long id) {
