@@ -2,7 +2,6 @@ package net.simonpeier.firstpass.controller;
 
 import net.simonpeier.firstpass.model.User;
 import net.simonpeier.firstpass.security.Cypher;
-import net.simonpeier.firstpass.service.ApplicationService;
 import net.simonpeier.firstpass.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,13 +14,11 @@ import java.security.spec.InvalidKeySpecException;
 
 @Controller
 public class AuthenticationController {
-    final UserService userService;
-    final ApplicationService applicationService;
+    private final UserService userService;
     private final Cypher cypher;
 
-    public AuthenticationController(UserService userService, ApplicationService applicationService) {
+    public AuthenticationController(UserService userService) {
         this.userService = userService;
-        this.applicationService = applicationService;
         cypher = new Cypher();
     }
 

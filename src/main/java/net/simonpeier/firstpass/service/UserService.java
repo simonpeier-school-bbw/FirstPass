@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @SessionScope
@@ -22,8 +21,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> findUserById(long id) {
-        return userRepository.findById(id);
+    public User findUserById(long id) {
+        return userRepository.findById(id).get();
     }
 
     public User findUserByName(String name) {
@@ -45,18 +44,15 @@ public class UserService {
         }
     }
 
-    public User updateUser(User user, long id) {
-        User updatedUser;
-        Optional<User> optionalUpdatedEntry = findUserById(id);
+    public User updateUserPassword(long id, User user) {
+        User userToUpdate = getReferenceToUserById(id);
+        userToUpdate.setPassword(user.getPassword());
+        userToUpdate.setSalt(user.getSalt());
+        return userRepository.save(userToUpdate);
+    }
 
-        if (optionalUpdatedEntry.isPresent()) {
-            updatedUser = optionalUpdatedEntry.get();
-            updatedUser.setUsername(user.getUsername());
-        } else {
-            updatedUser = user;
-            updatedUser.setId(id);
-        }
-        return userRepository.saveAndFlush(updatedUser);
+    private User getReferenceToUserById(long id) {
+        return userRepository.getOne(id);
     }
 
     public User getAuthorisedUser() {

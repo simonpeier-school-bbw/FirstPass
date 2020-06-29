@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class ApplicationController {
-    final UserService userService;
-    final ApplicationService applicationService;
+    private final UserService userService;
+    private final ApplicationService applicationService;
 
     public ApplicationController(UserService userService, ApplicationService applicationService) {
         this.userService = userService;
@@ -34,7 +34,7 @@ public class ApplicationController {
     }
 
     @GetMapping("/add-application")
-    public String addReservation(Model model) {
+    public String addApplication(Model model) {
         if (userService.getAuthorisedUser() != null) {
             model.addAttribute("app", new Application());
             return "add-application";
@@ -43,7 +43,7 @@ public class ApplicationController {
     }
 
     @PostMapping("/add-application")
-    public String addReservation(@ModelAttribute Application application) {
+    public String addApplication(@ModelAttribute Application application) {
         if (userService.getAuthorisedUser() != null) {
             application.setUser(userService.findUserByName(userService.getAuthorisedUser().getUsername()));
             applicationService.createApplication(application);
@@ -53,21 +53,17 @@ public class ApplicationController {
     }
 
     @GetMapping("/edit-application/{id}")
-    public String editReservation(@PathVariable("id") long id, Model model) {
+    public String editApplication(@PathVariable("id") long id, Model model) {
         if (userService.getAuthorisedUser() != null) {
-
             model.addAttribute("app", applicationService.findApplicationById(id));
-            System.out.println();
             return "edit-application";
         }
         return "redirect:/login";
     }
 
     @PostMapping("/edit-application/{id}")
-    public String editReservation(@PathVariable("id") long id, @ModelAttribute Application application) {
+    public String editApplication(@PathVariable("id") long id, @ModelAttribute Application application) {
         if (userService.getAuthorisedUser() != null) {
-
-            System.out.println(id);
             applicationService.updateApplication(application.getId(), application, userService.getAuthorisedUser());
             return "redirect:/dashboard";
         }
@@ -75,9 +71,8 @@ public class ApplicationController {
     }
 
     @GetMapping("/delete-application/{id}")
-    public String deleteReservation(@PathVariable("id") long id) {
+    public String deleteApplication(@PathVariable("id") long id) {
         if (userService.getAuthorisedUser() != null) {
-
             applicationService.deleteApplicationById(id);
             return "redirect:/dashboard";
         }
