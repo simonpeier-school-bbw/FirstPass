@@ -1,5 +1,6 @@
 package net.simonpeier.firstpass.controller;
 
+import net.simonpeier.firstpass.model.Application;
 import net.simonpeier.firstpass.model.User;
 import net.simonpeier.firstpass.security.Cypher;
 import net.simonpeier.firstpass.service.UserService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 @Controller
 public class AuthenticationController {
@@ -38,6 +40,8 @@ public class AuthenticationController {
                 // login successful
                 userService.setSecretKey(cypher.hashPassword(plainPw, cypher.generateSalt()));
                 userService.setAuthorisedUser(referenceUser);
+                List<Application> entriesDecrypted = cypher.decryptData(referenceUser.getApplications(), userService.getSecretKey());
+                userService.setApplications(entriesDecrypted);
                 return "redirect:/dashboard";
             }
         }
@@ -47,6 +51,11 @@ public class AuthenticationController {
 
     @GetMapping("/logout")
     public String logout() {
+
+        String encryptedApplications = cypher.encryptData(userService.getApplications(), userService.getSecretKey());
+        userService.getAuthorisedUser().setApplications(encryptedApplications);
+
+        userService.setSecretKey(null);
         userService.setAuthorisedUser(null);
         return "redirect:/";
     }

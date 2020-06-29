@@ -1,5 +1,6 @@
 package net.simonpeier.firstpass.service;
 
+import net.simonpeier.firstpass.model.Application;
 import net.simonpeier.firstpass.model.User;
 import net.simonpeier.firstpass.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ public class UserService {
     private final UserRepository userRepository;
     private User authorisedUser;
     private String secretKey;
+    private List<Application> applications;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -70,5 +72,13 @@ public class UserService {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
+    }
+
+    public List<Application> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(List<Application> applications) {
+        this.applications = applications;
     }
 }
