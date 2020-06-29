@@ -3,6 +3,7 @@ package net.simonpeier.firstpass.controller;
 import net.simonpeier.firstpass.model.Application;
 import net.simonpeier.firstpass.model.User;
 import net.simonpeier.firstpass.security.Cypher;
+import net.simonpeier.firstpass.service.ApplicationService;
 import net.simonpeier.firstpass.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,10 +23,12 @@ import java.util.List;
 public class AuthenticationController {
     private final UserService userService;
     private final Cypher cypher;
+    private final ApplicationService applicationService;
 
-    public AuthenticationController(UserService userService) {
+    public AuthenticationController(UserService userService, ApplicationService applicationService) {
         this.userService = userService;
         cypher = new Cypher();
+        this.applicationService = applicationService;
     }
 
     @GetMapping("/login")
@@ -57,7 +60,9 @@ public class AuthenticationController {
     public String logout() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
 
         List<Application> encryptedApplications = cypher.secureData(userService.getApplications(), userService.getSecretKey(), true);
-        userService.getAuthorisedUser().setApplications(encryptedApplications);
+        for (Application application : encryptedApplications) {
+            applicationService.createApplication(application);
+        }
 
         userService.setSecretKey(null);
         userService.setAuthorisedUser(null);

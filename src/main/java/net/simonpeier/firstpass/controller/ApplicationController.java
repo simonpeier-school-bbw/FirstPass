@@ -45,8 +45,9 @@ public class ApplicationController {
     @PostMapping("/add-application")
     public String addApplication(@ModelAttribute Application application) {
         if (userService.getAuthorisedUser() != null) {
+            User user = userService.getAuthorisedUser();
             application.setUser(userService.findUserByName(userService.getAuthorisedUser().getUsername()));
-            applicationService.createApplication(application);
+            user.getApplications().add(application);
             return "redirect:/dashboard";
         }
         return "redirect:/login";
