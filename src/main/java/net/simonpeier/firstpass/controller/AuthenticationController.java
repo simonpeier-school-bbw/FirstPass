@@ -30,11 +30,13 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public String handleLogin(Model model, @ModelAttribute User user) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        String plainPw = user.getPassword();
         User referenceUser = userService.findUserByName(user.getUsername());
         if (referenceUser != null) {
             user.setPassword(cypher.hashPassword(user.getPassword(), referenceUser.getSalt()));
             if (userService.findUserByName(user.getUsername()).getPassword().equals(user.getPassword())) {
                 // login successful
+                userService.setSecretKey(cypher.hashPassword(plainPw, cypher.generateSalt()));
                 userService.setAuthorisedUser(referenceUser);
                 return "redirect:/dashboard";
             }

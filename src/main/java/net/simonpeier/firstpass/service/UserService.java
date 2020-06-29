@@ -12,6 +12,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private User authorisedUser;
+    private String secretKey;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -61,5 +62,13 @@ public class UserService {
 
     public void setAuthorisedUser(User authorisedUser) {
         this.authorisedUser = authorisedUser;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 }
