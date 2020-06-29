@@ -52,17 +52,5 @@
 </div>
 <script src="webjars/jquery/3.5.1/jquery.min.js"></script>
 <script src="webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
-<script>
-    function generatePassword() {
-        var length = 20,
-            charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-.:,;=+\"%&/(){}",
-            retVal = "";
-        for (var i = 0, n = charset.length; i < length; ++i) {
-            retVal += charset.charAt(Math.floor(Math.random() * n));
-        }
-        return retVal;
-    }
-</script>
 </body>
 </html>

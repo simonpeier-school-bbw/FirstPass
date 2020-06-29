@@ -41,3 +41,15 @@ werden die Daten in das Model eingefügt. Die Repository Klassen sind die Schnit
 mit Hilfe der Repository Daten erstellt, gelesen, bearbeitet und gelöscht werden (CRUD).
 
 ### Sicherheitsaspekte
+Die Klasse Cypher kümmert sich um das hashen von Passwörtern sowie das verschlüsseln und entschlüsseln der Benutzerdaten.
+Die Applikation hat keinen Zugriff auf die unverschlüsselten Daten der Nutzer. Das Masterpasswort wird mithilfe der PKDF2-Utility mit dem SHA-1 Algorithmus mit 65536 Iterationen gehasht und anschliessend in die DB gespeichert.
+Für jeden User wird ein zufälliger Salt generiert, mit dem die Sicherheit des Hashes noch verstärkt wird. Die Benutzerdaten werden mithilfe der Cipherklasse nach dem AES verschlüsselt. Der Key wird dabei aus dem Masterpasswort hergeleitet, welches dafür erneut gehashed und gesalted wird, wodurch wir für jeden Benutzer einen einzigartigen Key generieren können, welcher sich bei jeder Session ändert und nicht gespeichert wird. Selbst wenn jemand Zugriff auf die Session des Users bekäme, würde er durch den Key nicht auf das Masterpasswort kommen.
+Die Daten werden beim login entschlüsselt und beim logout verschlüsselt wieder in die DB geschrieben. Wenn ein Benutzer sich einlogged, etwas ändert und die Seite verlässt, ohne sich auszuloggen
+
+#### Passwort ändern
+Wenn der User eingelogged ist, kann er neben dem Logout button auf einen change-password button klicken, woraufhin er auf ein Formular weitergeleitet wird, in dem er sein Passwort ändern kann.
+
+#### Passwort vergessen
+Dafür hatten wir leider keine Zeit mehr aber wir hätten das folgendermassen gelöst:
+1. Jeder user hat nebst dem Username noch eine Email
+2. Wenn man das Passwort vergessen hat, kann man beim Loginscreen auf einen Button klicken, wodurch eine Email mit einem einmaligen, für kurze Zeit validen Link verschickt werden würde mit dessen Hilfe man das Passwort zurücksetzen kann.
