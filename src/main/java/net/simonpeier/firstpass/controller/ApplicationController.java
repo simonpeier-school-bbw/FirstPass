@@ -27,7 +27,7 @@ public class ApplicationController {
         if (user != null) {
             User referenceUser = userService.findUserByName(user.getUsername());
             model.addAttribute("user", referenceUser);
-            model.addAttribute("applications", applicationService.findAllByUser(referenceUser));
+            model.addAttribute("applications", user.getApplications());
             return "/dashboard";
         }
         return "redirect:/login";

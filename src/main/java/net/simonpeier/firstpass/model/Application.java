@@ -1,6 +1,8 @@
 package net.simonpeier.firstpass.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Entity
 public class Application {
@@ -9,15 +11,19 @@ public class Application {
     private Long id;
 
     @Column(nullable = false)
+    @NotNull(message = "Cannot be empty")
     private String name;
 
     @Column(nullable = false)
+    @NotNull(message = "Cannot be empty")
     private String username;
 
     @Column(nullable = false)
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", message = "Must at least contain 8 characters, including 1 upperCase letter , 1 lowerCase letter, 1 digit and one special character")
     private String password;
 
     @Column(nullable = false)
+    @NotNull(message = "Cannot be empty")
     private String description;
 
     @ManyToOne

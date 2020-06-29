@@ -61,7 +61,11 @@ public class AuthenticationController {
 
         List<Application> encryptedApplications = cypher.secureData(userService.getApplications(), userService.getSecretKey(), true);
         for (Application application : encryptedApplications) {
-            applicationService.createApplication(application);
+            try {
+                applicationService.findApplicationById(application.getId());
+            } catch (NullPointerException e) {
+                applicationService.createApplication(application);
+            }
         }
 
         userService.setSecretKey(null);

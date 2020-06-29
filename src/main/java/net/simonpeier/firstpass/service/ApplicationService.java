@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ApplicationService {
@@ -35,7 +36,8 @@ public class ApplicationService {
     }
 
     public Application findApplicationById(long id) {
-        return applicationRepository.findById(id).get();
+        Optional<Application> optionalApplication = applicationRepository.findById(id);
+        return optionalApplication.orElse(null);
     }
 
     public Application createApplication(Application application) {
