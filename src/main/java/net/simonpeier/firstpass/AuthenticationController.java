@@ -39,7 +39,7 @@ public class AuthenticationController {
                 // login successful
                 userService.setAuthorisedUser(user);
                 model.addAttribute("user", user);
-                model.addAttribute("applications", applicationService.findAllByUser(user));
+                model.addAttribute("applications", applicationService.findAllByUser(referenceUser));
                 return "dashboard";
             }
         }

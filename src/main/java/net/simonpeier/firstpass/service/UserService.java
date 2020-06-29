@@ -11,21 +11,8 @@ import java.util.Optional;
 @Service
 @SessionScope
 public class UserService {
-    private User authorisedUser;
-
-    public User getAuthorisedUser() {
-        return authorisedUser;
-    }
-
-    public void setAuthorisedUser(User authorisedUser) {
-        this.authorisedUser = authorisedUser;
-    }
-
-    public UserRepository getUserRepository() {
-        return userRepository;
-    }
-
     private final UserRepository userRepository;
+    private User authorisedUser;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -70,5 +57,13 @@ public class UserService {
             updatedUser.setId(id);
         }
         return userRepository.saveAndFlush(updatedUser);
+    }
+
+    public User getAuthorisedUser() {
+        return authorisedUser;
+    }
+
+    public void setAuthorisedUser(User authorisedUser) {
+        this.authorisedUser = authorisedUser;
     }
 }
