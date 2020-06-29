@@ -53,3 +53,6 @@ Wenn der User eingelogged ist, kann er neben dem Logout button auf einen change-
 Dafür hatten wir leider keine Zeit mehr aber wir hätten das folgendermassen gelöst:
 1. Jeder user hat nebst dem Username noch eine Email
 2. Wenn man das Passwort vergessen hat, kann man beim Loginscreen auf einen Button klicken, wodurch eine Email mit einem einmaligen, für kurze Zeit validen Link verschickt werden würde mit dessen Hilfe man das Passwort zurücksetzen kann.
+
+### Probleme
+Das entschlüsseln der Applikationen gibt noch einen Fehler aus. Die Fehlermeldung ist "javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher" wir hatten leider keine Zeit mehr, diese Exception zu beheben.
