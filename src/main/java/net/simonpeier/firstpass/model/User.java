@@ -20,10 +20,11 @@ public class User {
     @Column(nullable = false)
     private String salt;
 
-    @Column(nullable = false)
-    private String applications;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Application> applications;
 
-    public User(String username, String password, String salt, String applications) {
+    public User(String username, String password, String salt, List<Application> applications) {
         this.username = username;
         this.password = password;
         this.salt = salt;
@@ -66,11 +67,11 @@ public class User {
         this.password = password;
     }
 
-    public String getApplications() {
+    public List<Application> getApplications() {
         return applications;
     }
 
-    public void setApplications(String applications) {
+    public void setApplications(List<Application> applications) {
         this.applications = applications;
     }
 }
