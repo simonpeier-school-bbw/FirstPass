@@ -68,7 +68,7 @@ public class ApplicationController {
         if (userService.getAuthorisedUser() != null) {
 
             System.out.println(id);
-            applicationService.updateApplication(application, application.getId());
+            applicationService.updateApplication(application.getId(), application, userService.getAuthorisedUser());
             return "redirect:/dashboard";
         }
         return "redirect:/login";

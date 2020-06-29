@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ApplicationService {
@@ -49,13 +48,14 @@ public class ApplicationService {
         }
     }
 
-    public Application updateApplication(Application application, long id) {
+    public Application updateApplication(long id, Application application, User user) {
         Application applicationToUpdate = getReferenceToApplicationById(id);
 
-            applicationToUpdate.setUser(application.getUser());
-            applicationToUpdate.setName(application.getName());
-            applicationToUpdate.setUsername(application.getUsername());
-            applicationToUpdate.setDescription(application.getDescription());
+        applicationToUpdate.setUser(application.getUser());
+        applicationToUpdate.setName(application.getName());
+        applicationToUpdate.setUsername(application.getUsername());
+        applicationToUpdate.setDescription(application.getDescription());
+        applicationToUpdate.setUser(user);
 
         return applicationRepository.save(applicationToUpdate);
     }
