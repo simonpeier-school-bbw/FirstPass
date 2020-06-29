@@ -1,4 +1,4 @@
-package net.simonpeier.firstpass;
+package net.simonpeier.firstpass.security;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;

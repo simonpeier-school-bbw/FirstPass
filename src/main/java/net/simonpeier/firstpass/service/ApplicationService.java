@@ -31,8 +31,12 @@ public class ApplicationService {
         return applications;
     }
 
-    public Optional<Application> findApplicationById(long id) {
-        return applicationRepository.findById(id);
+    private Application getReferenceToApplicationById(long id) {
+        return applicationRepository.getOne(id);
+    }
+
+    public Application findApplicationById(long id) {
+        return applicationRepository.findById(id).get();
     }
 
     public Application createApplication(Application application) {
@@ -46,15 +50,13 @@ public class ApplicationService {
     }
 
     public Application updateApplication(Application application, long id) {
-        Application updatedApplication;
-        Optional<Application> optionalUpdatedEntry = findApplicationById(id);
+        Application applicationToUpdate = getReferenceToApplicationById(id);
 
-        if (optionalUpdatedEntry.isPresent()) {
-            updatedApplication = optionalUpdatedEntry.get();
-        } else {
-            updatedApplication = application;
-            updatedApplication.setId(id);
-        }
-        return applicationRepository.saveAndFlush(updatedApplication);
+            applicationToUpdate.setUser(application.getUser());
+            applicationToUpdate.setName(application.getName());
+            applicationToUpdate.setUsername(application.getUsername());
+            applicationToUpdate.setDescription(application.getDescription());
+
+        return applicationRepository.save(applicationToUpdate);
     }
 }

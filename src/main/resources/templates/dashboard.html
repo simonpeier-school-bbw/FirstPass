@@ -18,6 +18,8 @@
             <th>Username</th>
             <th>Password</th>
             <th>Description</th>
+            <th>Edit</th>
+            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -29,6 +31,8 @@
             <td th:text="${app.username}"></td>
             <td th:text="${app.password}"></td>
             <td th:text="${app.description}"></td>
+            <td><a th:href="@{/edit-application/{id}(id=${app.id})}">Edit</a></td>
+            <td><a th:href="@{/delete-application/{id}(id=${app.id})}">Delete</a></td>                 
         </tr>
         </tbody>
     </table>
