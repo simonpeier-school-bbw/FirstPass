@@ -37,14 +37,23 @@ public class AuthenticationController {
             user.setPassword(cypher.hashPassword(user.getPassword(), referenceUser.getSalt()));
             if (userService.findUserByName(user.getUsername()).getPassword().equals(user.getPassword())) {
                 // login successful
-                userService.setAuthorisedUser(user);
-                model.addAttribute("user", user);
-                model.addAttribute("applications", applicationService.findAllByUser(referenceUser));
-                return "dashboard";
+                userService.setAuthorisedUser(referenceUser);
+                return "redirect:/dashboard";
             }
         }
         model.addAttribute("error", "Wrong username or password");
         return "login";
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboard(Model model) {
+        User user = userService.getAuthorisedUser();
+        if (user != null) {
+            model.addAttribute("user", user);
+            model.addAttribute("applications", applicationService.findAllByUser(user));
+            return "/dashboard";
+        }
+        return "redirect:/login";
     }
 
     @GetMapping("/logout")
