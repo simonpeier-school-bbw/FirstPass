@@ -2,6 +2,7 @@ package net.simonpeier.firstpass.controller;
 
 import net.simonpeier.firstpass.model.Application;
 import net.simonpeier.firstpass.model.User;
+import net.simonpeier.firstpass.security.Cypher;
 import net.simonpeier.firstpass.service.ApplicationService;
 import net.simonpeier.firstpass.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -11,20 +12,34 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Controller
 public class ApplicationController {
     private final UserService userService;
     private final ApplicationService applicationService;
+    private Cypher cypher;
 
     public ApplicationController(UserService userService, ApplicationService applicationService) {
         this.userService = userService;
         this.applicationService = applicationService;
+        cypher = new Cypher();
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
+    public String dashboard(Model model) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         User user = userService.getAuthorisedUser();
         if (user != null) {
+            List<Application> entriesDecrypted = cypher.secureData(userService.findUserByName(user.getUsername()).getApplications(), userService.getSecretKey(), false);
+            userService.setApplications(entriesDecrypted);
+
             User referenceUser = userService.findUserByName(user.getUsername());
             model.addAttribute("user", referenceUser);
             model.addAttribute("applications", user.getApplications());
@@ -54,18 +69,20 @@ public class ApplicationController {
     }
 
     @GetMapping("/edit-application/{id}")
-    public String editApplication(@PathVariable("id") long id, Model model) {
+    public String editApplication(@PathVariable("id") long id, Model model) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         if (userService.getAuthorisedUser() != null) {
-            model.addAttribute("app", applicationService.findApplicationById(id));
+            List<Application> applicationsDecrypted = cypher.secureData(new ArrayList<>(Collections.singletonList(applicationService.findApplicationById(id))), userService.getSecretKey(), false);
+            model.addAttribute("app", applicationsDecrypted.get(0));
             return "edit-application";
         }
         return "redirect:/login";
     }
 
     @PostMapping("/edit-application/{id}")
-    public String editApplication(@PathVariable("id") long id, @ModelAttribute Application application) {
+    public String editApplication(@PathVariable("id") long id, @ModelAttribute Application application) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         if (userService.getAuthorisedUser() != null) {
-            applicationService.updateApplication(application.getId(), application, userService.getAuthorisedUser());
+            List<Application> applicationsEncrypted = cypher.secureData(new ArrayList<>(Collections.singletonList(application)), userService.getSecretKey(), true);
+            applicationService.updateApplication(application.getId(), applicationsEncrypted.get(0), userService.getAuthorisedUser());
             return "redirect:/dashboard";
         }
         return "redirect:/login";

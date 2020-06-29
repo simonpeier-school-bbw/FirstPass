@@ -56,3 +56,4 @@ Dafür hatten wir leider keine Zeit mehr aber wir hätten das folgendermassen ge
 
 ### Probleme
 Das entschlüsseln der Applikationen gibt noch einen Fehler aus. Die Fehlermeldung ist "javax.crypto.IllegalBlockSizeException: Input length must be multiple of 16 when decrypting with padded cipher" wir hatten leider keine Zeit mehr, diese Exception zu beheben.
+Aufgrund dieses Fehlers ist es momentan nicht möglich, Applications zu bearbeiten oder löschen. Auch kann sich der Benutzer nich ausloggen und wieder einloggen.

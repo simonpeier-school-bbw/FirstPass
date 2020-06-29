@@ -47,8 +47,8 @@ public class AuthenticationController {
                 // login successful
                 userService.setSecretKey(cypher.hashPassword(plainPw, cypher.generateSalt()));
                 userService.setAuthorisedUser(referenceUser);
-                List<Application> entriesDecrypted = cypher.secureData(referenceUser.getApplications(), userService.getSecretKey(), false);
-                userService.setApplications(entriesDecrypted);
+//                List<Application> entriesDecrypted = cypher.secureData(referenceUser.getApplications(), userService.getSecretKey(), false);
+//                userService.setApplications(entriesDecrypted);
                 return "redirect:/dashboard";
             }
         }
