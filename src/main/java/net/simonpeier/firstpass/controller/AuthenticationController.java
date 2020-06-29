@@ -1,13 +1,14 @@
 package net.simonpeier.firstpass.controller;
 
-import net.simonpeier.firstpass.model.Application;
 import net.simonpeier.firstpass.model.User;
 import net.simonpeier.firstpass.security.Cypher;
 import net.simonpeier.firstpass.service.ApplicationService;
 import net.simonpeier.firstpass.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -45,54 +46,9 @@ public class AuthenticationController {
         return "login";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model) {
-        User user = userService.getAuthorisedUser();
-        if (user != null) {
-            User referenceUser = userService.findUserByName(user.getUsername());
-            model.addAttribute("user", referenceUser);
-            model.addAttribute("applications", applicationService.findAllByUser(referenceUser));
-            return "/dashboard";
-        }
-        return "redirect:/login";
-    }
-
     @GetMapping("/logout")
     public String logout() {
         userService.setAuthorisedUser(null);
         return "redirect:/";
-    }
-
-    @GetMapping("/add-application")
-    public String addReservation(Model model) {
-        model.addAttribute(new Application());
-        return "add-application";
-    }
-
-    @PostMapping("/add-application")
-    public String addReservation(@ModelAttribute Application application) {
-        application.setUser(userService.findUserByName(userService.getAuthorisedUser().getUsername()));
-        applicationService.createApplication(application);
-        return "redirect:/dashboard";
-    }
-
-    @GetMapping("/edit-application/{id}")
-    public String editReservation(@PathVariable("id") long id, Model model) {
-        model.addAttribute("app", applicationService.findApplicationById(id));
-        System.out.println();
-        return "edit-application";
-    }
-
-    @PostMapping("/edit-application/{id}")
-    public String editReservation(@PathVariable("id") long id, @ModelAttribute Application application) {
-        System.out.println(id);
-        applicationService.updateApplication(application, application.getId());
-        return "redirect:/dashboard";
-    }
-
-    @GetMapping("/delete-application/{id}")
-    public String deleteReservation(@PathVariable("id") long id) {
-        applicationService.deleteApplicationById(id);
-        return "redirect:/dashboard";
     }
 }

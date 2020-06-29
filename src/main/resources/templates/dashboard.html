@@ -9,6 +9,25 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body id="body" class="background1">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">FirstPass</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav mr-auto">
+                <a class="nav-item nav-link" href="/">Home</a>
+                <a class="nav-item nav-link active" href="/dashboard">Dashboard <span
+                        class="sr-only">(current)</span></a>
+            </div>
+            <div class="navbar-nav navbar-right">
+                <a class="nav-item nav-link" href="/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
 <div class="container">
     <h1 class="my-4">Dashboard</h1>
     <table class="table table-striped">
@@ -23,7 +42,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:if="${applications.empty}">
+        <tr th:if="${applications.isEmpty()}">
             <td colspan="5">No Applications Available</td>
         </tr>
         <tr th:each="app : ${applications}">
@@ -32,15 +51,11 @@
             <td th:text="${app.password}"></td>
             <td th:text="${app.description}"></td>
             <td><a th:href="@{/edit-application/{id}(id=${app.id})}">Edit</a></td>
-            <td><a th:href="@{/delete-application/{id}(id=${app.id})}">Delete</a></td>                 
+            <td><a th:href="@{/delete-application/{id}(id=${app.id})}">Delete</a></td>
         </tr>
         </tbody>
     </table>
-    <form th:action="@{/logout}" method="GET">
-        <div class="col text-center">
-            <button type="submit" value="Login" name="Submit" class="btn">Log out</button>
-        </div>
-    </form>
+    <a class="btn btn-primary" href="/add-application">Add application</a>
 </div>
 </body>
 </html>

@@ -9,22 +9,36 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body id="body" class="background1">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">FirstPass</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav mr-auto">
+                <a class="nav-item nav-link " href="/">Home</a>
+            </div>
+        </div>
+    </div>
+</nav>
 <div class="container">
     <h1 class="my-4">Log in</h1>
     <form th:action="@{/login}" method="POST" th:object="${user}">
-        <div class="form-group">
-            <small for="username">Username</small>
-            <input id="username" type="text" name="username" class="form-control" th:field="*{username}"/>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">User</label>
+            <input type="text" class="form-control col-sm-10" th:field="*{username}" required>
         </div>
-        <div class="form-group">
-            <small for="password">Password</small>
-            <input id="password" type="password" name="password" class="form-control" th:field="*{password}"/>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Password</label>
+            <input type="text" class="form-control col-sm-10" th:field="*{password}">
         </div>
         <div class="form-group error-response">
             <p th:text="${error}"></p>
         </div>
-        <div class="col text-center">
-            <button type="submit" value="Login" name="Submit" class="btn">Log in</button>
+        <div class="my-5">
+            <button class="btn btn-primary" type="submit" name="Submit">Confirm</button>
         </div>
     </form>
 </div>
