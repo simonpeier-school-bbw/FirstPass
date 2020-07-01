@@ -20,7 +20,7 @@ public class Cypher {
     // hashes password of given User using the provided salt
     public String hashPassword(String password, String salt) throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeySpec spec = new PBEKeySpec(password.toCharArray(), salt.getBytes(), 65536, 128);
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
 
         byte[] hash = factory.generateSecret(spec).getEncoded();
 
