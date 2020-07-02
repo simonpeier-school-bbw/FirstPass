@@ -36,7 +36,7 @@ public class AuthenticationController {
             user.setPassword(cypher.hashPassword(user.getPassword(), referenceUser.getSalt()));
             if (userService.findUserByName(user.getUsername()).getPassword().equals(user.getPassword())) {
                 // login successful
-                userService.setSecretKey(cypher.hashPassword(plainPw, cypher.generateSalt()));
+                userService.setSecretKey(cypher.hashPassword(plainPw, referenceUser.getSalt()));
                 userService.setAuthorisedUser(referenceUser);
                 return "redirect:/dashboard";
             }
