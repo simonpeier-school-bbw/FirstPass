@@ -22,24 +22,6 @@ public class ApplicationService {
         cypher = new Cypher();
     }
 
-    public List<Application> findAll() {
-        return cypher.secureData(applicationRepository.findAll(), userService.getSecretKey(), false);
-    }
-
-    public List<Application> findAllByUser(User user) {
-        List<Application> applications = new ArrayList<>();
-        for (Application application : findAll()) {
-            if (application.getUser() == user) {
-                applications.add(application);
-            }
-        }
-        return cypher.secureData(applications, userService.getSecretKey(), false);
-    }
-
-    private Application getReferenceToApplicationById(long id) {
-        return cypher.secureData(applicationRepository.getOne(id), userService.getSecretKey(), false);
-    }
-
     public Application findApplicationById(long id) {
         Optional<Application> optionalApplication = applicationRepository.findById(id);
         return cypher.secureData(optionalApplication.orElse(null), userService.getSecretKey(), false);
@@ -55,7 +37,7 @@ public class ApplicationService {
         }
     }
 
-    public void updateApplication(long id, Application application, User user,String secretKey) {
+    public void updateApplication(long id, Application application, User user, String secretKey) {
         Application applicationToUpdate = getReferenceToApplicationById(id);
 
         applicationToUpdate.setUser(user);
@@ -65,5 +47,23 @@ public class ApplicationService {
         applicationToUpdate.setPassword(application.getPassword());
 
         applicationRepository.save(cypher.secureData(applicationToUpdate, secretKey, true));
+    }
+
+    public List<Application> findAllByUser(User user) {
+        List<Application> applications = new ArrayList<>();
+        for (Application application : findAll()) {
+            if (application.getUser() == user) {
+                applications.add(application);
+            }
+        }
+        return cypher.secureData(applications, userService.getSecretKey(), false);
+    }
+
+    private List<Application> findAll() {
+        return cypher.secureData(applicationRepository.findAll(), userService.getSecretKey(), false);
+    }
+
+    private Application getReferenceToApplicationById(long id) {
+        return cypher.secureData(applicationRepository.getOne(id), userService.getSecretKey(), false);
     }
 }

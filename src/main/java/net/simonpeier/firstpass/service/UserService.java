@@ -1,12 +1,12 @@
 package net.simonpeier.firstpass.service;
 
-import net.simonpeier.firstpass.model.Application;
 import net.simonpeier.firstpass.model.User;
 import net.simonpeier.firstpass.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @SessionScope
@@ -14,18 +14,14 @@ public class UserService {
     private final UserRepository userRepository;
     private User authorisedUser;
     private String secretKey;
-    private List<Application> applications;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
     public User findUserById(long id) {
-        return userRepository.findById(id).get();
+        Optional<User> optionalUser = userRepository.findById(id);
+        return optionalUser.orElse(null);
     }
 
     public User findUserByName(String name) {
@@ -47,15 +43,15 @@ public class UserService {
         }
     }
 
-    public User updateUserPassword(long id, User user) {
+    public void updateUserPassword(long id, User user) {
         User userToUpdate = getReferenceToUserById(id);
         userToUpdate.setPassword(user.getPassword());
         userToUpdate.setSalt(user.getSalt());
-        return userRepository.save(userToUpdate);
+        userRepository.save(userToUpdate);
     }
 
-    private User getReferenceToUserById(long id) {
-        return userRepository.getOne(id);
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     public User getAuthorisedUser() {
@@ -74,11 +70,7 @@ public class UserService {
         this.secretKey = secretKey;
     }
 
-    public List<Application> getApplications() {
-        return applications;
-    }
-
-    public void setApplications(List<Application> applications) {
-        this.applications = applications;
+    private User getReferenceToUserById(long id) {
+        return userRepository.getOne(id);
     }
 }

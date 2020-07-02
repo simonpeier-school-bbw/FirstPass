@@ -29,9 +29,6 @@ public class Application {
     @ManyToOne
     private User user;
 
-    public Application() {
-    }
-
     public Long getId() {
         return id;
     }

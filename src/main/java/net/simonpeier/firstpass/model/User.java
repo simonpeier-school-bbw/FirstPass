@@ -24,17 +24,6 @@ public class User {
     @JsonIgnore
     private List<Application> applications;
 
-    public User(String username, String password, String salt, List<Application> applications) {
-        this.username = username;
-        this.password = password;
-        this.salt = salt;
-        this.applications = applications;
-    }
-
-    public User() {
-
-    }
-
     public String getSalt() {
         return salt;
     }
