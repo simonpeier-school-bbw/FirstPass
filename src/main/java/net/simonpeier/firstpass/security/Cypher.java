@@ -11,7 +11,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Cypher {
 
@@ -34,6 +37,60 @@ public class Cypher {
         return byteArrToString(hash);
     }
 
+    public Application secureData(Application application, String key, boolean encrypt) {
+        return secureData(new ArrayList<>(Collections.singletonList(application)), key, encrypt).get(0);
+    }
+
+    public List<Application> secureData(List<Application> applications, String key, boolean encrypt) {
+        Cipher cipher = getCipher(key, encrypt);
+
+        for (Application application : applications) {
+            if (cipher != null) {
+                if (encrypt) {
+                    try {
+                        application.setName(Base64.encodeBase64String(cipher.doFinal(application.getName().getBytes())));
+                        application.setUsername(Base64.encodeBase64String(cipher.doFinal(application.getUsername().getBytes())));
+                        application.setDescription(Base64.encodeBase64String(cipher.doFinal(application.getDescription().getBytes())));
+                        application.setPassword(Base64.encodeBase64String(cipher.doFinal(application.getPassword().getBytes())));
+                    } catch (IllegalBlockSizeException | BadPaddingException e) {
+                        System.out.println("Could not encrypt data: " + e.getClass());
+                    }
+                } else {
+                    try {
+                        application.setName(Base64.encodeBase64String(cipher.doFinal(application.getName().getBytes())));
+                        application.setUsername(Base64.encodeBase64String(cipher.doFinal(application.getUsername().getBytes())));
+                        application.setDescription(Base64.encodeBase64String(cipher.doFinal(application.getDescription().getBytes())));
+                        application.setPassword(Base64.encodeBase64String(cipher.doFinal(application.getPassword().getBytes())));
+                    } catch (IllegalBlockSizeException | BadPaddingException e) {
+                        System.out.println("Could not decrypt data: " + e.getClass());
+                    }
+                }
+            }
+        }
+        return applications;
+    }
+
+    private Cipher getCipher(String key, boolean encrypt) {
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("AES");
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            System.out.println("This encryption algorithm does not exist: " + e.getClass());
+        }
+
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), "AES");
+        try {
+            if (encrypt) {
+                Objects.requireNonNull(cipher).init(Cipher.ENCRYPT_MODE, secretKeySpec);
+            } else {
+                Objects.requireNonNull(cipher).init(Cipher.DECRYPT_MODE, secretKeySpec);
+            }
+        } catch (InvalidKeyException e) {
+            System.out.println("Cipher key is invalid: " + e.getClass());
+        }
+        return cipher;
+    }
+
     private String byteArrToString(byte[] byteArr) {
         StringBuilder hexString = new StringBuilder();
         for (byte b : byteArr) {
@@ -43,24 +100,5 @@ public class Cypher {
             hexString.append(hex);
         }
         return hexString.toString();
-    }
-
-    public List<Application> secureData(List<Application> applications, String key, boolean encrypt) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Cipher cipher = Cipher.getInstance("AES");
-        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), "AES");
-        if (encrypt) {
-            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
-        } else {
-            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-        }
-
-        for (Application application : applications) {
-            application.setName(Base64.encodeBase64String(cipher.doFinal(application.getName().getBytes())));
-            application.setUsername(Base64.encodeBase64String(cipher.doFinal(application.getUsername().getBytes())));
-            application.setDescription(Base64.encodeBase64String(cipher.doFinal(application.getDescription().getBytes())));
-            application.setPassword(Base64.encodeBase64String(cipher.doFinal(application.getPassword().getBytes())));
-        }
-
-        return applications;
     }
 }

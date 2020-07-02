@@ -12,20 +12,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 @Controller
 public class ApplicationController {
     private final UserService userService;
     private final ApplicationService applicationService;
-    private Cypher cypher;
+    private final Cypher cypher;
 
     public ApplicationController(UserService userService, ApplicationService applicationService) {
         this.userService = userService;
@@ -34,15 +25,15 @@ public class ApplicationController {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public String dashboard(Model model) {
         User user = userService.getAuthorisedUser();
         if (user != null) {
-            List<Application> entriesDecrypted = cypher.secureData(userService.findUserByName(user.getUsername()).getApplications(), userService.getSecretKey(), false);
-            userService.setApplications(entriesDecrypted);
+            //List<Application> entriesDecrypted = cypher.secureData(userService.findUserByName(user.getUsername()).getApplications(), userService.getSecretKey(), false);
+            //userService.setApplications(entriesDecrypted);
 
             User referenceUser = userService.findUserByName(user.getUsername());
             model.addAttribute("user", referenceUser);
-            model.addAttribute("applications", user.getApplications());
+            model.addAttribute("applications", applicationService.findAllByUser(referenceUser));
             return "/dashboard";
         }
         return "redirect:/login";
@@ -60,29 +51,26 @@ public class ApplicationController {
     @PostMapping("/add-application")
     public String addApplication(@ModelAttribute Application application) {
         if (userService.getAuthorisedUser() != null) {
-            User user = userService.getAuthorisedUser();
             application.setUser(userService.findUserByName(userService.getAuthorisedUser().getUsername()));
-            user.getApplications().add(application);
+            applicationService.createApplication(application);
             return "redirect:/dashboard";
         }
         return "redirect:/login";
     }
 
     @GetMapping("/edit-application/{id}")
-    public String editApplication(@PathVariable("id") long id, Model model) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public String editApplication(@PathVariable("id") long id, Model model) {
         if (userService.getAuthorisedUser() != null) {
-            List<Application> applicationsDecrypted = cypher.secureData(new ArrayList<>(Collections.singletonList(applicationService.findApplicationById(id))), userService.getSecretKey(), false);
-            model.addAttribute("app", applicationsDecrypted.get(0));
+            model.addAttribute("app", applicationService.findApplicationById(id));
             return "edit-application";
         }
         return "redirect:/login";
     }
 
     @PostMapping("/edit-application/{id}")
-    public String editApplication(@PathVariable("id") long id, @ModelAttribute Application application) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public String editApplication(@PathVariable("id") long id, @ModelAttribute Application application) {
         if (userService.getAuthorisedUser() != null) {
-            List<Application> applicationsEncrypted = cypher.secureData(new ArrayList<>(Collections.singletonList(application)), userService.getSecretKey(), true);
-            applicationService.updateApplication(application.getId(), applicationsEncrypted.get(0), userService.getAuthorisedUser());
+            applicationService.updateApplication(application.getId(), application, userService.getAuthorisedUser());
             return "redirect:/dashboard";
         }
         return "redirect:/login";
