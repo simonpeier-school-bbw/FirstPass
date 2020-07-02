@@ -58,11 +58,11 @@ public class ApplicationService {
     public void updateApplication(long id, Application application, User user) {
         Application applicationToUpdate = getReferenceToApplicationById(id);
 
-        applicationToUpdate.setUser(application.getUser());
+        applicationToUpdate.setUser(user);
         applicationToUpdate.setName(application.getName());
         applicationToUpdate.setUsername(application.getUsername());
         applicationToUpdate.setDescription(application.getDescription());
-        applicationToUpdate.setUser(user);
+        applicationToUpdate.setPassword(application.getPassword());
 
         applicationRepository.save(cypher.secureData(applicationToUpdate, userService.getSecretKey(), true));
     }

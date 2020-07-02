@@ -57,10 +57,10 @@ public class Cypher {
                     }
                 } else {
                     try {
-                        application.setName(Base64.encodeBase64String(cipher.doFinal(application.getName().getBytes())));
-                        application.setUsername(Base64.encodeBase64String(cipher.doFinal(application.getUsername().getBytes())));
-                        application.setDescription(Base64.encodeBase64String(cipher.doFinal(application.getDescription().getBytes())));
-                        application.setPassword(Base64.encodeBase64String(cipher.doFinal(application.getPassword().getBytes())));
+                        application.setName(new String(cipher.doFinal(Base64.decodeBase64(application.getName().getBytes()))));
+                        application.setUsername(new String(cipher.doFinal(Base64.decodeBase64(application.getUsername().getBytes()))));
+                        application.setDescription(new String(cipher.doFinal(Base64.decodeBase64(application.getDescription().getBytes()))));
+                        application.setPassword(new String(cipher.doFinal(Base64.decodeBase64(application.getPassword().getBytes()))));
                     } catch (IllegalBlockSizeException | BadPaddingException e) {
                         System.out.println("Could not decrypt data: " + e.getClass());
                     }
