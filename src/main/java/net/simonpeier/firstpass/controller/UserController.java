@@ -1,7 +1,9 @@
 package net.simonpeier.firstpass.controller;
 
+import net.simonpeier.firstpass.model.Application;
 import net.simonpeier.firstpass.model.User;
 import net.simonpeier.firstpass.security.Cypher;
+import net.simonpeier.firstpass.service.ApplicationService;
 import net.simonpeier.firstpass.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,14 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 @Controller
 public class UserController {
     private final UserService userService;
+    private final ApplicationService applicationService;
     private final Cypher cypher;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ApplicationService applicationService) {
         this.userService = userService;
+        this.applicationService = applicationService;
         cypher = new Cypher();
     }
 
@@ -34,9 +39,9 @@ public class UserController {
 
     @PostMapping("/edit-password/{id}")
     public String editPassword(@PathVariable("id") long id, @ModelAttribute User user) throws InvalidKeySpecException, NoSuchAlgorithmException {
-        System.out.println(user.getUsername());
-        user.setUsername(userService.findUserById(id).getUsername());
+        User oldUser = userService.findUserById(id);
 
+        user.setUsername(oldUser.getUsername());
         if (userService.getAuthorisedUser() != null) {
             // Generate new salt
             String salt = cypher.generateSalt();
@@ -47,6 +52,15 @@ public class UserController {
             // Save changes into database
             userService.updateUserPassword(id, user);
             userService.setAuthorisedUser(userService.findUserById(id));
+
+            // Encrypt data with new SecretKey
+            String newSecretKey = user.getPassword();
+            List<Application> applications = applicationService.findAllByUser(oldUser);
+            for (Application application : applications) {
+                applicationService.updateApplication(application.getId(), application, userService.getAuthorisedUser(), newSecretKey);
+            }
+            userService.setSecretKey(newSecretKey);
+
             return "redirect:/dashboard";
         }
         return "redirect:/login";

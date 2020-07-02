@@ -2,7 +2,6 @@ package net.simonpeier.firstpass.controller;
 
 import net.simonpeier.firstpass.model.Application;
 import net.simonpeier.firstpass.model.User;
-import net.simonpeier.firstpass.security.Cypher;
 import net.simonpeier.firstpass.service.ApplicationService;
 import net.simonpeier.firstpass.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -16,21 +15,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class ApplicationController {
     private final UserService userService;
     private final ApplicationService applicationService;
-    private final Cypher cypher;
 
     public ApplicationController(UserService userService, ApplicationService applicationService) {
         this.userService = userService;
         this.applicationService = applicationService;
-        cypher = new Cypher();
     }
 
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         User user = userService.getAuthorisedUser();
         if (user != null) {
-            //List<Application> entriesDecrypted = cypher.secureData(userService.findUserByName(user.getUsername()).getApplications(), userService.getSecretKey(), false);
-            //userService.setApplications(entriesDecrypted);
-
             User referenceUser = userService.findUserByName(user.getUsername());
             model.addAttribute("user", referenceUser);
             model.addAttribute("applications", applicationService.findAllByUser(referenceUser));
@@ -70,7 +64,7 @@ public class ApplicationController {
     @PostMapping("/edit-application/{id}")
     public String editApplication(@PathVariable("id") long id, @ModelAttribute Application application) {
         if (userService.getAuthorisedUser() != null) {
-            applicationService.updateApplication(application.getId(), application, userService.getAuthorisedUser());
+            applicationService.updateApplication(id, application, userService.getAuthorisedUser(), userService.getSecretKey());
             return "redirect:/dashboard";
         }
         return "redirect:/login";

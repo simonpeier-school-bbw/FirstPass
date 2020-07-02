@@ -55,7 +55,7 @@ public class ApplicationService {
         }
     }
 
-    public void updateApplication(long id, Application application, User user) {
+    public void updateApplication(long id, Application application, User user,String secretKey) {
         Application applicationToUpdate = getReferenceToApplicationById(id);
 
         applicationToUpdate.setUser(user);
@@ -64,6 +64,6 @@ public class ApplicationService {
         applicationToUpdate.setDescription(application.getDescription());
         applicationToUpdate.setPassword(application.getPassword());
 
-        applicationRepository.save(cypher.secureData(applicationToUpdate, userService.getSecretKey(), true));
+        applicationRepository.save(cypher.secureData(applicationToUpdate, secretKey, true));
     }
 }
