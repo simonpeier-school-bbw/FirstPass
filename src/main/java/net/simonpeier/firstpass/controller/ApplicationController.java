@@ -6,10 +6,12 @@ import net.simonpeier.firstpass.service.ApplicationService;
 import net.simonpeier.firstpass.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
 
 @Controller
 public class ApplicationController {
@@ -43,8 +45,12 @@ public class ApplicationController {
     }
 
     @PostMapping("/add-application")
-    public String addApplication(@ModelAttribute Application application) {
+    public String addApplication(@Valid Application application, BindingResult bindingResult, Model model) {
         if (userService.getAuthorisedUser() != null) {
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("app", application);
+                return "add-application";
+            }
             application.setUser(userService.findUserByName(userService.getAuthorisedUser().getUsername()));
             applicationService.createApplication(application);
             return "redirect:/dashboard";
@@ -62,8 +68,12 @@ public class ApplicationController {
     }
 
     @PostMapping("/edit-application/{id}")
-    public String editApplication(@PathVariable("id") long id, @ModelAttribute Application application) {
+    public String editApplication(@PathVariable("id") long id, @Valid Application application, BindingResult bindingResult, Model model) {
         if (userService.getAuthorisedUser() != null) {
+            if (bindingResult.hasErrors()) {
+                model.addAttribute("app", application);
+                return "edit-application";
+            }
             applicationService.updateApplication(id, application, userService.getAuthorisedUser(), userService.getSecretKey());
             return "redirect:/dashboard";
         }

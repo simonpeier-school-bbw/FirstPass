@@ -31,19 +31,23 @@
     <form th:action="@{/edit-application/{id}(id=${app.id})}" method="POST" th:object="${app}">
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Name</label>
-            <input type="text" class="form-control col-sm-10" th:field="*{name}" required>
+            <input type="text" class="form-control col-sm-10" th:field="*{name}">
+            <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Username</label>
             <input type="text" class="form-control col-sm-10" th:field="*{username}">
+            <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</span>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Password</label>
             <input type="text" class="form-control col-sm-10" th:field="*{password}">
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</span>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Description</label>
             <input type="text" class="form-control col-sm-10" th:field="*{description}">
+            <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Description Error</span>
         </div>
         <div class="my-5">
             <button class="btn btn-primary" type="submit" name="Submit">Confirm</button>
